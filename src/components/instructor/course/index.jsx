@@ -3,7 +3,10 @@ import { InstructorHeader } from "../../instructor/header";
 import Footer from "../../footer";
 import { Edit, Eye, Trash } from "react-feather";
 import {
- 
+  // Course10,
+  // Course11,
+  // Course12,
+  // Course13,
   Icon1,
   TimerStart,
 } from "../../imagepath";
@@ -191,8 +194,8 @@ export default function InstructorCourse() {
                             </thead>
                             <tbody>
                               {loading == false &&
-                                filteredCours.map((cours, index) => (
-                                  <React.Fragment key={index}>
+                                filteredCours.map((cours) => (
+                                  <React.Fragment key={cours.id}>
                                     <tr>
                                       <td>
                                         <div className="sell-table-group d-flex align-items-center">
