@@ -16,10 +16,23 @@ import "./assets/plugins/fontawesome/css/all.min.css";
 import "./assets/css/style.css";
 
 import Approuter from "./approuter";
+import { Provider } from "react-redux";
+// import store from "./redux/store/ReduxStore";
+
+import { ContextProvider } from "./context/ContextProvider";
+
+import { store } from "./redux/slice";
+import { CourseProvider } from "./context/CourseProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <Approuter />
+    <CourseProvider>
+      <ContextProvider>
+        <Provider store={store}>
+          <Approuter />
+        </Provider>
+      </ContextProvider>
+    </CourseProvider>
   </>
 );
