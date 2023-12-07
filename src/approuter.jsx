@@ -1,17 +1,13 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import BlogDetails from "./components/blog/blogDetails";
-import BlogGrid from "./components/blog/blogGrid";
-import BlogList from "./components/blog/bloglist";
 import BlogMasonry from "./components/blog/blogMasonry";
-import BlogModern from "./components/blog/blogModern";
 import Cart from "./components/pages/cart";
 import JobCategory from "./components/pages/category";
 import Checkout from "./components/pages/checkout";
 import AddCourse from "./components/pages/course/addCourse";
+import EditCourse from "./components/pages/course/editCourse";
 import CourseDetails from "./components/pages/course/courseDetails";
-import CourseDetails1 from "./components/pages/course/courseDetails1";
-import CourseDetails2 from "./components/pages/course/courseDetails2";
 import CourseGrid from "./components/pages/course/courseGrid";
 import CourseLesson from "./components/pages/course/courseLesson";
 import CourseList from "./components/pages/course/courseList";
@@ -38,9 +34,7 @@ import Wishlist from "./components/pages/wishlist";
 
 //harish
 import { Home } from "./components/home";
-import { Home2 } from "./components/home2";
-import { Home3 } from "./components/home3";
-import { Home4 } from "./components/home4";
+
 import { Dashboard } from "./components/instructor/dashboard";
 import { InstructorList } from "./components/instructor/list";
 import InstructorGrid from "./components/instructor/grid";
@@ -98,74 +92,107 @@ import CourseStudent from "./components/student/courseStudent";
 import PurchaseHistory from "./components/student/purchaseHistory";
 import ViewInvoice from "./components/student/invoice/viewInvoice";
 import NewPassword from "./components/pages/newPassword";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import GuestLayout from "./components/GuestRoute";
+import RestrictedRoutes from "./components/RestrictedRoutes";
+
+// console.log(userInfo);
 const Approuter = () => {
+  // const userInfo = authApi.getUserInfo();
+  // console.log(userInfo);
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/home2" element={<Home2 />} />
-        <Route path="/home3" element={<Home3 />} />
-        <Route path="/home4" element={<Home4 />} />
-        <Route path="/instructor-dashboard" element={<Dashboard />} />
-        <Route path="/instructor-list" element={<InstructorList />} />
-        <Route path="/instructor-grid" element={<InstructorGrid />} />
-        <Route path="/instructor-course" element={<InstructorCourse />} />
+        {/* RESERVE AUX PROF */}
+        <Route element={<RestrictedRoutes roles={["professeur"]} />}>
+          <Route path="/add-course" element={<AddCourse />} />
+          <Route path="/edit-course/:id" element={<EditCourse />} />
+          <Route path="/profile" element={<InstructorEditProfile />} />
+          <Route path="/prof-cours" element={<InstructorCourse />} />
+        </Route>
+        {/* RESERVE AUX ETUDIANTS */}
+        <Route element={<RestrictedRoutes roles={["etudiant"]} />}>
+          <Route
+            path="/setting-edit-profile"
+            element={<StudentEditProfile />}
+          />
+          <Route
+            path="/setting-student-security"
+            element={<StudentSecurity />}
+          />
+          <Route path="/course-student" element={<CourseStudent />} />
+        </Route>
 
-        {/* Blog */}
-        <Route path="/blog-list" element={<BlogList />} />
-        <Route path="/blog-grid" element={<BlogGrid />} />
-        <Route path="/blog-masonry" element={<BlogMasonry />} />
-        <Route path="/blog-modern" element={<BlogModern />} />
-        <Route path="/blog-details" element={<BlogDetails />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/instructor-dashboard" element={<Dashboard />} />{" "}
+          {/* toi */}
+          <Route path="/instructor-list" element={<InstructorList />} />
+          <Route path="/confirm/:id" element={<UnderConstruction />} />
+          <Route path="/instructor-grid" element={<InstructorGrid />} />
+          <Route path="/course-list" element={<CourseList />} />
+          <Route path="/instructor-reviews" element={<InstructorReviews />} />
+          <Route path="/instructor-list" element={<InstructorList />} />
+          {/* <Route path="/instructor-earnings" element={<Dashboard />} /> */}
+          <Route path="/instructor-earnings" element={<InstructorEarnings />} />
+          {/* STUDENT */}
+          <Route
+            path="/instructor-profile/:pseudo"
+            element={<InstructorProfile />}
+          />
+          <Route path="/purchase-history" element={<PurchaseHistory />} />
+          <Route path="/course-lesson/:slug" element={<CourseLesson />} />
+          <Route path="/setting-student-invoice" element={<StudentInvoice />} />
+          <Route path="/course-details/:slug" element={<CourseDetails />} />
+          <Route path="/course-message" element={<CourseMessage />} />
+          {/* Blog */}
+          <Route path="/blog" element={<BlogMasonry />} />
+          <Route path="/blog/:slug" element={<BlogDetails />} />
+        </Route>
 
         {/* Pages */}
         <Route path="/page-notification" element={<Notification />} />
         <Route path="/pricing-plan" element={<PricingPlan />} />
         <Route path="/pricing-plan2" element={<PricingPlan2 />} />
         <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/add-course" element={<AddCourse />} />
-        <Route path="/course-list" element={<CourseList />} />
+
         <Route path="/course-grid" element={<CourseGrid />} />
-        <Route path="/course-details" element={<CourseDetails />} />
-        <Route path="/course-details1" element={<CourseDetails1 />} />
-        <Route path="/course-details2" element={<CourseDetails2 />} />
-        <Route path="/course-lesson" element={<CourseLesson />} />
+
         <Route path="/come-soon" element={<ComingSoon />} />
         <Route path="/error-404" element={<Error404 />} />
         <Route path="/error-500" element={<Error500 />} />
-        <Route path="/under-construction" element={<UnderConstruction />} />
+        {/* <Route path="/under-construction" element={<UnderConstruction />} /> */}
         <Route path="/faq" element={<Faq />} />
         <Route path="/support" element={<Support />} />
         <Route path="/job-category" element={<JobCategory />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/new-password" element={<NewPassword />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<GuestLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<NewPassword />} />
+
         <Route path="/register1" element={<RegisterOne />} />
         <Route path="/register2" element={<RegisterTwo />} />
         <Route path="/register3" element={<RegisterThree />} />
         <Route path="/register4" element={<RegisterFour />} />
         <Route path="/register5" element={<RegisterFive />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+
         <Route path="/term-condition" element={<TermsCondition />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
         {/* Instructor Routes */}
-        <Route path="/instructor-dashboard" element={<Dashboard />} />
-        <Route path="/instructor-list" element={<InstructorList />} />
+        {/* <Route path="/instructor-dashboard" element={<Dashboard />} /> */}
         <Route path="/instructor-grid" element={<InstructorGrid />} />
-        <Route path="/instructor-course" element={<InstructorCourse />} />
-        <Route path="/instructor-reviews" element={<InstructorReviews />} />
-        <Route path="/instructor-earnings" element={<InstructorEarnings />} />
+        {/* <Route path="/instructor-course" element={<InstructorCourse />} /> */}
+
         <Route path="/instructor-orders" element={<InstructorOrders />} />
         <Route path="/instructor-payouts" element={<InstructorPayouts />} />
         <Route path="/instructor-tickets" element={<InstructorTickets />} />
-        <Route path="/instructor-profile" element={<InstructorProfile />} />
-        <Route
-          path="/instructor-edit-profile"
-          element={<InstructorEditProfile />}
-        />
+        {/* <Route path="/instructor-profile" element={<InstructorProfile />} /> */}
+
         <Route path="/instructor-security" element={<InstructorSecurity />} />
         <Route
           path="/instructor-social-profile"
@@ -218,14 +245,14 @@ const Approuter = () => {
         />
 
         {/*Student Routes  */}
-        <Route path="/setting-edit-profile" element={<StudentEditProfile />} />
+
         <Route path="/setting-student-accounts" element={<StudentAccounts />} />
         <Route path="/setting-student-billing" element={<StudentBilling />} />
         <Route
           path="/setting-student-delete-profile"
           element={<StudentDeleteProfile />}
         />
-        <Route path="/setting-student-invoice" element={<StudentInvoice />} />
+
         <Route path="/view-invoice" element={<ViewInvoice />} />
         <Route
           path="/setting-student-notification"
@@ -234,7 +261,6 @@ const Approuter = () => {
         <Route path="/setting-student-payment" element={<StudentPayment />} />
         <Route path="/setting-student-privacy" element={<StudentPrivacy />} />
         <Route path="/setting-student-referral" element={<StudentReferral />} />
-        <Route path="/setting-student-security" element={<StudentSecurity />} />
         <Route
           path="/setting-student-social-profile"
           element={<StudentSocialProfile />}
@@ -260,12 +286,11 @@ const Approuter = () => {
         <Route path="/students-grid" element={<StudentsGrid />} />
         <Route path="/students-grid2" element={<StudentsGrid2 />} />
         <Route path="/students-list" element={<StudentsList />} />
-        <Route path="/course-student" element={<CourseStudent />} />
+
         <Route path="/course-wishlist" element={<CourseWishlist />} />
-        <Route path="/course-message" element={<CourseMessage />} />
-        <Route path="/purchase-history" element={<PurchaseHistory />} />
         <Route path="/deposit-student" element={<DepositStudent />} />
         <Route path="/transactions-student" element={<TransactionStudent />} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
     </BrowserRouter>
   );
