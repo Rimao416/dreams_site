@@ -105,8 +105,8 @@ const Approuter = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         {/* RESERVE AUX PROF */}
+        <Route path="/add-course" element={<AddCourse />} />
         <Route element={<RestrictedRoutes roles={["professeur"]} />}>
-          <Route path="/add-course" element={<AddCourse />} />
           <Route path="/edit-course/:id" element={<EditCourse />} />
           <Route path="/profile" element={<InstructorEditProfile />} />
           <Route path="/prof-cours" element={<InstructorCourse />} />
