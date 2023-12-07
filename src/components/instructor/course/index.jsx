@@ -1,27 +1,39 @@
 import React, { useState } from "react";
 import { InstructorHeader } from "../../instructor/header";
 import Footer from "../../footer";
+import { Edit, Eye, Trash } from "react-feather";
 import {
-  Course10,
-  Course11,
-  Course12,
-  Course13,
-  Course14,
-  Icon1, 
+ 
+  Icon1,
   TimerStart,
 } from "../../imagepath";
 import { Search } from "react-feather";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import InstructorSidebar from "../sidebar";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
+import { deleteCours, profCours } from "../../../redux/slice/coursSlice";
+import { useStateContext } from "../../../context/ContextProvider";
+// import {useSelector} from "react-redux"
 
 export default function InstructorCourse() {
-  const [setValue] = useState(null);
+  const { cours, loading } = useSelector((state) => state.coursReducer);
+  const { user } = useStateContext();
+  // console.log(user)
+  console.log(cours);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    user?.id && dispatch(profCours(user?.id));
+  }, [user]);
+  // const prof=useSelector(state=>state)
+  // console.log(prof)
   const options = [
-    { label: "Choose", value: "choose" },
-    { label: "Angular", value: "Angular" },
-    { label: "React", value: "React" },
-    { label: "Node", value: "Node" },
+    { label: "Tout", value: "" },
+    { label: "Publié", value: "Publié" },
+    { label: "Brouillon", value: "Brouillon" },
+    // { label: "Node", value: "Node" },
   ];
   const style = {
     control: (baseStyles, state) => ({
@@ -64,6 +76,42 @@ export default function InstructorCourse() {
       transition: "250ms",
     }),
   };
+  const handleDelete = (id) => {
+    const shouldDelete = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer ce cours? Cette action sera irréversible!"
+    );
+    if (shouldDelete) {
+      // Effectuer l'action de suppression ici
+      dispatch(deleteCours(id)).then((result) => {
+        if (result.type == "deleteCours/fulfilled") {
+          toast.success("Cours supprimé avec succès");
+        }
+        console.log(result);
+      });
+    } else {
+      // L'utilisateur a cliqué sur "Annuler", aucune action nécessaire
+      console.log("Suppression annulée");
+    }
+  };
+  const [searchQuery, setSearchQuery] = useState({
+    nom: "",
+    statut: "",
+  });
+  const handleFilter = (event) => {
+    setSearchQuery({
+      ...searchQuery,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const filteredCours = cours?.filter((row) => {
+    const nameMatch = row.title
+      .toLowerCase()
+      .includes(searchQuery.nom.toLowerCase());
+    const statutMatch = row.status
+      .toLowerCase()
+      .includes(searchQuery.statut.toLowerCase());
+    return nameMatch && statutMatch;
+  });
   return (
     <div className="main-wrapper">
       <InstructorHeader activeMenu={"Courses"} />
@@ -82,11 +130,7 @@ export default function InstructorCourse() {
                   <div className="settings-widget">
                     <div className="settings-inner-blk p-0">
                       <div className="sell-course-head comman-space">
-                        <h3>Courses</h3>
-                        <p>
-                          Manage your courses and its update like live, draft
-                          and insight.
-                        </p>
+                        <h3>Cours</h3>
                       </div>
                       <div className="comman-space pb-0">
                         <div className="instruct-search-blk">
@@ -100,13 +144,15 @@ export default function InstructorCourse() {
                                       style={{
                                         position: "absolute",
                                         left: "7px",
-                                        color: "#F66962",
+                                        color: "#58BBDE",
                                       }}
                                     />
                                     <input
                                       type="text"
                                       className="form-control"
-                                      placeholder="Search our courses"
+                                      placeholder="Entrez un cours"
+                                      onChange={handleFilter}
+                                      name="nom"
                                     />
                                   </div>
                                 </div>
@@ -114,11 +160,16 @@ export default function InstructorCourse() {
                                   <div className="form-group select-form mb-0">
                                     <Select
                                       className=" select"
-                                      name="sellist1"
+                                      name="statut"
                                       options={options}
                                       defaultValue={options[0]}
-                                      placeholder="Choose"
-                                      onChange={setValue}
+                                      placeholder="Statut"
+                                      onChange={(selectedOption) =>
+                                        setSearchQuery({
+                                          ...searchQuery,
+                                          statut: selectedOption.value,
+                                        })
+                                      }
                                       styles={style}
                                     ></Select>
                                   </div>
@@ -132,205 +183,120 @@ export default function InstructorCourse() {
                           <table className="table table-nowrap mb-2">
                             <thead>
                               <tr>
-                                <th>COURSES</th>
-                                <th>STUDENTS</th>
-                                <th>STATUS</th>
+                                <th>COURS</th>
+                                <th>ÉTUDIANTS</th>
+                                <th>STATUTS</th>
+                                <th>ACTION</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>
-                                  <div className="sell-table-group d-flex align-items-center">
-                                    <div className="sell-group-img">
-                                      <Link to="/course-details">
-                                        <img
-                                          src={Course10}
-                                          className="img-fluid "
-                                          alt=""
-                                        />
-                                      </Link>
-                                    </div>
-                                    <div className="sell-tabel-info">
-                                      <p>
-                                        <Link to="/course-details">
-                                          Information About UI/UX Design Degree
+                              {loading == false &&
+                                filteredCours.map((cours, index) => (
+                                  <React.Fragment key={index}>
+                                    <tr>
+                                      <td>
+                                        <div className="sell-table-group d-flex align-items-center">
+                                          <div className="sell-group-img">
+                                            <Link to={`/course-details/${cours.slug}`}>
+                                              <img
+                                                // src={Course14}
+                                                src={cours.image}
+                                                // width={"150px"}
+                                                // height={"112px"}
+
+                                                style={{
+                                                  width: "150px",
+                                                  height: "112px",
+                                                  objectFit: "cover",
+                                                  overflow: "hidden",
+                                                  backgroundPosition: "center",
+                                                }}
+                                                className="img-fluid "
+                                                alt=""
+                                              />
+                                            </Link>
+                                          </div>
+                                          <div className="sell-tabel-info">
+                                            <p>
+                                              <Link to={`/course-details/${cours.slug}`}>
+                                                {cours.title}
+                                              </Link>
+                                            </p>
+                                            <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
+                                              <div className="rating-img d-flex align-items-center">
+                                                <img src={Icon1} alt="" />
+                                                <p>
+                                                  {cours.total_lessons} Leçons
+                                                </p>
+                                              </div>
+                                              <div className="course-view d-flex align-items-center">
+                                                <img src={TimerStart} alt="" />
+                                                <p>7hr 20min</p>
+                                                {/* <p>{cours.status}</p> */}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td>{cours.total_etudiant}</td>
+                                      {/* <td className="d-flex flex-column align-items-center gap-2">
+                                        <span className="badge info-low">
+                                          Voir plus
+                                        </span>
+                                        <Link to={`/edit-course/${cours.slug}`}>
+                                          <span className="badge info-inter">
+                                            Modifier
+                                          </span>
                                         </Link>
-                                      </p>
-                                      <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
-                                        <div className="rating-img d-flex align-items-center">
-                                          <img src={Icon1} alt="" />
-                                          <p>10+ Lesson</p>
-                                        </div>
-                                        <div className="course-view d-flex align-items-center">
-                                          <img src={TimerStart} alt="" />
-                                          <p>7hr 20min</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>3200</td>
-                                <td>
-                                  <span className="badge info-low">Live</span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="sell-table-group d-flex align-items-center">
-                                    <div className="sell-group-img">
-                                      <Link to="/course-details">
-                                        <img
-                                          src={Course11}
-                                          className="img-fluid "
-                                          alt=""
-                                        />
-                                      </Link>
-                                    </div>
-                                    <div className="sell-tabel-info">
-                                      <p>
-                                        <Link to="/course-details">
-                                          Wordpress for Beginners - Master
-                                          Wordpress Quickly
+                                        <Link to="#">
+                                          <span
+                                            className="badge info-high cursor-pointer"
+                                            onClick={() =>
+                                              handleDelete(cours.id)
+                                            }
+                                          >
+                                            Supprimer
+                                          </span>
                                         </Link>
-                                      </p>
-                                      <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
-                                        <div className="rating-img d-flex align-items-center">
-                                          <img src={Icon1} alt="" />
-                                          <p>10+ Lesson</p>
+                                      </td> */}
+
+                                      <td>
+                                        {" "}
+                                        <span
+                                          className={
+                                            cours.status === "Brouillon"
+                                              ? "badge info-inter"
+                                              : "badge info-low"
+                                          }
+                                        >
+                                          {cours.status}
+                                        </span>
+                                      </td>
+                                      <td>
+                                        <div className="d-flex ">
+                                          <Link to="#;" className="btn-style">
+                                            <Eye />
+                                          </Link>
+                                          <Link
+                                            to={`/edit-course/${cours.slug}`}
+                                            className="btn-style"
+                                          >
+                                            <Edit />
+                                          </Link>
+                                          <Link
+                                            to="#;"
+                                            className="btn-style"
+                                            onClick={() =>
+                                              handleDelete(cours.id)
+                                            }
+                                          >
+                                            <Trash />
+                                          </Link>
                                         </div>
-                                        <div className="course-view d-flex align-items-center">
-                                          <img src={TimerStart} alt="" />
-                                          <p>7hr 20min</p>
-                                        </div>
-                                      </div>
-                                      <div className="course-stip progress-stip">
-                                        <div className="progress-bar bg-success progress-bar-striped active-stip"></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>0</td>
-                                <td>
-                                  <span className="badge info-inter">
-                                    Darft
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="sell-table-group d-flex align-items-center">
-                                    <div className="sell-group-img">
-                                      <Link to="/course-details">
-                                        <img
-                                          src={Course12}
-                                          className="img-fluid "
-                                          alt=""
-                                        />
-                                      </Link>
-                                    </div>
-                                    <div className="sell-tabel-info">
-                                      <p>
-                                        <Link to="/course-details">
-                                          Sketch from A to Z (2022): Become an
-                                          app designer
-                                        </Link>
-                                      </p>
-                                      <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
-                                        <div className="rating-img d-flex align-items-center">
-                                          <img src={Icon1} alt="" />
-                                          <p>10+ Lesson</p>
-                                        </div>
-                                        <div className="course-view d-flex align-items-center">
-                                          <img src={TimerStart} alt="" />
-                                          <p>7hr 20min</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>1500</td>
-                                <td>
-                                  <span className="badge info-low">Live</span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="sell-table-group d-flex align-items-center">
-                                    <div className="sell-group-img">
-                                      <Link to="/course-details">
-                                        <img
-                                          src={Course13}
-                                          className="img-fluid "
-                                          alt=""
-                                        />
-                                      </Link>
-                                    </div>
-                                    <div className="sell-tabel-info">
-                                      <p>
-                                        <Link to="/course-details">
-                                          C# Developers Double Your Coding Speed
-                                          with Visual Studio
-                                        </Link>
-                                      </p>
-                                      <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
-                                        <div className="rating-img d-flex align-items-center">
-                                          <img src={Icon1} alt="" />
-                                          <p>10+ Lesson</p>
-                                        </div>
-                                        <div className="course-view d-flex align-items-center">
-                                          <img src={TimerStart} alt="" />
-                                          <p>7hr 20min</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>0</td>
-                                <td>
-                                  <span className="badge info-medium">
-                                    Pending
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td>
-                                  <div className="sell-table-group d-flex align-items-center">
-                                    <div className="sell-group-img">
-                                      <Link to="/course-details">
-                                        <img
-                                          src={Course14}
-                                          className="img-fluid "
-                                          alt=""
-                                        />
-                                      </Link>
-                                    </div>
-                                    <div className="sell-tabel-info">
-                                      <p>
-                                        <Link to="/course-details">
-                                          Build Responsive Real World Websites
-                                          with HTML5 and CSS3
-                                        </Link>
-                                      </p>
-                                      <div className="course-info d-flex align-items-center border-bottom-0 pb-0">
-                                        <div className="rating-img d-flex align-items-center">
-                                          <img src={Icon1} alt="" />
-                                          <p>10+ Lesson</p>
-                                        </div>
-                                        <div className="course-view d-flex align-items-center">
-                                          <img src={TimerStart} alt="" />
-                                          <p>7hr 20min</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td>0</td>
-                                <td>
-                                  <span className="badge info-high">
-                                    Deleted
-                                  </span>
-                                </td>
-                              </tr>
+                                      </td>
+                                    </tr>
+                                  </React.Fragment>
+                                ))}
                             </tbody>
                           </table>
                           {/* Referred Users */}
