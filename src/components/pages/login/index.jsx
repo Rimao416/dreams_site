@@ -2,55 +2,97 @@ import React from "react";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 import OwlCarousel from "react-owl-carousel";
-import { LoginImg, logo, NetIcon1, NetIcon2 } from "../../imagepath";
+import { LoginImg } from "../../imagepath";
 import FeatherIcon from "feather-icons-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
+import { API } from "../../../config";
+import { useStateContext } from "../../../context/ContextProvider";
+import Message from "../../Message";
+import { useNavigate } from "react-router-dom";
+import Button from "../../Button";
 const Login = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [credentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState(null);
+  const { setUser, setToken } = useStateContext();
+  const isDisabled = () => {
+    return !credentials.email || !credentials.password;
+  };
 
   const [passwordType, setPasswordType] = useState("password");
-  const [passwordInput, setPasswordInput] = useState("");
+  const handleSubmit = (event) => {
+    setLoading(true);
+    event.preventDefault();
+    API.post("/login", credentials)
+      .then(({ data }) => {
+        console.log(data);
+        // setUser(data.user)
+        setToken(data.access_token);
+        const me = API.get("/me");
+        me.then(({ data }) => {
+          console.log(data);
+          setUser(data.data);
+          if (data.data.role == "etudiant") {
+            navigate("/setting-edit-profile");
+          } else if (data.data.role == "professeur") {
+            navigate("/profile");
+          }
+        });
+        // dispatch(login());
+        // toast.success(data.message);
+        setLoading(false);
+      })
+      .catch((err) => {
+        const response = err.response;
+        if (response && response.status === 422) {
+          console.log(response.data.message);
+          setErrors(response.data.message);
+        }
+        setLoading(false);
+      });
+  };
 
-  
-  const handlePasswordChange =(evnt)=>{
-      setPasswordInput(evnt.target.value);
-  }
-  const togglePassword =()=>{
-    if(passwordType==="password")
-    {
-     setPasswordType("text")
-     return;
+  const handleChange = (event) => {
+    setCredentials({ ...credentials, [event.target.name]: event.target.value });
+  };
+  const togglePassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      return;
     }
-    setPasswordType("password")
-  }
+    setPasswordType("password");
+  };
 
+  var settings = {
+    //autoWidth: true,
+    items: 1,
+    margin: 25,
+    dots: false,
+    nav: false,
+    navText: [
+      '<i className="fas fa-arrow-left"></i>',
+      '<i className="fas fa-arrow-right"></i>',
+    ],
 
-    var settings = {
-        //autoWidth: true,
-        items: 2,
-        margin: 25,
-        dots: true,
-        nav: true,
-        navText: [
-          '<i className="fas fa-arrow-left"></i>',
-          '<i className="fas fa-arrow-right"></i>',
-        ],
-    
-        loop: true,
-        responsiveClass: true,
-        responsive: {
-          0: {
-            items: 1,
-          },
-          768: {
-            items: 1,
-          },
-          1170: {
-            items: 1,
-          },
-        },
-    };
+    loop: false,
+    responsiveClass: true,
+    responsive: {
+      0: {
+        items: 1,
+      },
+      768: {
+        items: 1,
+      },
+      1170: {
+        items: 1,
+      },
+    },
+  };
 
   return (
     <>
@@ -58,67 +100,44 @@ const Login = () => {
         <div className="row">
           {/* Login Banner */}
           <div className="col-md-6 login-bg">
-            <OwlCarousel 
-            {...settings}
-            className="owl-carousel login-slide owl-theme">
+            <OwlCarousel
+              {...settings}
+              className="owl-carousel login-slide owl-theme"
+            >
               <div className="welcome-login">
                 <div className="login-banner">
-                  <img
-                    src={LoginImg}
-                    className="img-fluid"
-                    alt="Logo"
-                  />
+                  <img src={LoginImg} className="img-fluid" alt="Logo" />
                 </div>
                 <div className="mentor-course text-center">
                   <h2>
-                    Welcome to <br />
-                    DreamsLMS Courses.
+                    Bienvenue sur <br />
+                    The Music Hall
                   </h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam.
-                  </p>
+                  <p></p>
                 </div>
               </div>
               <div className="welcome-login">
                 <div className="login-banner">
-                  <img
-                    src={LoginImg}
-                    className="img-fluid"
-                    alt="Logo"
-                  />
+                  <img src={LoginImg} className="img-fluid" alt="Logo" />
                 </div>
                 <div className="mentor-course text-center">
                   <h2>
-                    Welcome to <br />
-                    DreamsLMS Courses.
+                    Bienvenue sur <br />
+                    The Music Hall
                   </h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam.
-                  </p>
+                  <p></p>
                 </div>
               </div>
               <div className="welcome-login">
                 <div className="login-banner">
-                  <img
-                    src={LoginImg}
-                    className="img-fluid"
-                    alt="Logo"
-                  />
+                  <img src={LoginImg} className="img-fluid" alt="Logo" />
                 </div>
                 <div className="mentor-course text-center">
                   <h2>
-                    Welcome to <br />
-                    DreamsLMS Courses.
+                    Bienvenue sur <br />
+                    The Music Hall
                   </h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam.
-                  </p>
+                  <p></p>
                 </div>
               </div>
             </OwlCarousel>
@@ -131,92 +150,74 @@ const Login = () => {
                 <div className="w-100">
                   <div className="img-logo">
                     <img
-                      src={logo}
+                      src={"https://themusichall.fr/assets/logo.svg"}
+                      width={"50%"}
                       className="img-fluid"
                       alt="Logo"
                     />
                     <div className="back-home">
-                      <Link to="/">Back to Home</Link>
+                      <Link to="/">Retourner à l&apos;accueil</Link>
                     </div>
                   </div>
-                  <h1>Sign into Your Account</h1>
-                  <form action="/reactjs/instructor-dashboard">
+                  <h1>Connexion</h1>
+                  {errors && <Message message={errors} />}
+                  <form onSubmit={handleSubmit}>
                     <div className="form-group">
                       <label className="form-control-label">Email</label>
                       <input
                         type="email"
                         className="form-control"
-                        placeholder="Enter your email address"
+                        placeholder="Email"
+                        onChange={handleChange}
+                        name="email"
+                        value={credentials.email}
                       />
                     </div>
+
                     <div className="form-group">
-                      <label className="form-control-label">Password</label>
+                      <label className="form-control-label">Mot de passe</label>
                       <div className="pass-group">
-                      <input type={passwordType} onChange={handlePasswordChange} value={passwordInput} name="password" className="form-control" placeholder="Password" />
-                     <span className="toggle-password feather-eye" onClick={togglePassword}>
-                     { passwordType==="password"? <FeatherIcon icon="eye"/>:<FeatherIcon icon="eye-off"/> }
-                     </span>
+                        <input
+                          type={passwordType}
+                          onChange={handleChange}
+                          value={credentials.password}
+                          name="password"
+                          className="form-control"
+                          placeholder="Mot de passe"
+                        />
+                        <span
+                          className="toggle-password feather-eye"
+                          onClick={togglePassword}
+                        >
+                          {passwordType === "password" ? (
+                            <FeatherIcon icon="eye" />
+                          ) : (
+                            <FeatherIcon icon="eye-off" />
+                          )}
+                        </span>
                       </div>
                     </div>
                     <div className="forgot">
                       <span>
                         <Link className="forgot-link" to="/forgot-password">
-                          Forgot Password ?
+                          Mot de passe oublié ?
                         </Link>
                       </span>
                     </div>
-                    <div className="remember-me">
-                      <label className="custom_check mr-2 mb-0 d-inline-flex remember-me">
-                        {" "}
-                        Remember me
-                        <input type="checkbox" name="radio" />
-                        <span className="checkmark" />
-                      </label>
-                    </div>
-                    <div className="d-grid">
-                      <Link
 
-                        to="/instructor-dashboard"
-                        className="btn btn-start"
-                        type="submit"
-                      >
-                        Sign In
-                      </Link>
+                    <div className="d-grid">
+                      <Button loading={loading}>
+                        <button
+                          disabled={isDisabled()}
+                          className="btn btn-start"
+                          type="submit"
+                        >
+                          Connexion
+                        </button>
+                      </Button>
                     </div>
                   </form>
                 </div>
-              </div>
-              <div className="google-bg text-center">
-                <span>
-                  <Link to="#">Or sign in with</Link>
-                </span>
-                <div className="sign-google">
-                  <ul>
-                    <li>
-                      <Link to="#">
-                        <img
-                          src={NetIcon1}
-                          className="img-fluid"
-                          alt="Logo"
-                        />{" "}
-                        Sign In using Google
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="#">
-                        <img
-                          src={NetIcon2}
-                          className="img-fluid"
-                          alt="Logo"
-                        />
-                        Sign In using Facebook
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-                <p className="mb-0">
-                  New User ? <Link to="/register">Create an Account</Link>
-                </p>
               </div>
             </div>
             {/* /Login */}
