@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+// import { combineReducers } from "redux";
 import profReducer from "./profSlice";
 import profsReducer from "./profsSlice";
 import coursReducer from "./coursSlice";

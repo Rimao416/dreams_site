@@ -135,7 +135,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(getPaidCourses.rejected, (state, action) => {
+      .addCase(getPaidCourses.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
@@ -152,7 +152,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(getHistory.rejected, (state, action) => {
+      .addCase(getHistory.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
@@ -169,7 +169,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(getStudentPaiement.rejected, (state, action) => {
+      .addCase(getStudentPaiement.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
@@ -186,7 +186,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(getUsersMessage.rejected, (state, action) => {
+      .addCase(getUsersMessage.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
@@ -203,7 +203,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(getUsersConversation.rejected, (state, action) => {
+      .addCase(getUsersConversation.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
@@ -220,7 +220,7 @@ const studentSlice = createSlice({
           //   blogs: page==1 ? action.payload.data : [...state.blogs, ...action.payload.data],
         };
       })
-      .addCase(sendMessage.rejected, (state, action) => {
+      .addCase(sendMessage.rejected, (state) => {
         state.loading = false;
         state.error = true;
       });
