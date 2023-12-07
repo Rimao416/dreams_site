@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Error2, logo } from "../../../imagepath";
+import { Error2 } from "../../../imagepath";
 
 const Error500 = () => {
 

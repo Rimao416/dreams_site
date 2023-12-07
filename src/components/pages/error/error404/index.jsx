@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Empty, logo } from "../../../imagepath";
+import { Empty } from "../../../imagepath";
 
 const Error404 = () => {
   useEffect(() => {
