@@ -155,7 +155,7 @@ export const Home = () => {
                 <div className="home-slide-face aos" data-aos="fade-up">
                   <div className="home-slide-text ">
                     <h5>The Leader in Online Learning</h5>
-                    <h1> &amp; Accessible Online Courses For All</h1>
+                    <h1>Ma soeur &amp; Accessible Online Courses For All</h1>
                     <p>Own your future learning new skills online</p>
                   </div>
                   <div className="banner-content">
