@@ -34,7 +34,6 @@ const AddCourse = () => {
   const [TabChange, setTabChange] = useState(false);
   const [TabChange1, setTabChange1] = useState(false);
   const [TabChange2, setTabChange2] = useState(false);
-  const [TabChange3] = useState(false);
   const [PageChange, setPageChange] = useState("basic");
 
   const nextTab = () => {
@@ -64,7 +63,7 @@ const AddCourse = () => {
     setPageChange("settings");
   };
 
-  
+
 
   return (
     <>
@@ -130,17 +129,7 @@ const AddCourse = () => {
                             <span></span> Leçons
                           </p>
                         </li>
-                        <li
-                          className={
-                            TabChange3
-                              ? "progress-activated"
-                              : "" || TabChange2
-                              ? "progress-active"
-                              : ""
-                          }
-                        >
                        
-                        </li>
                       </ul>
                     </div>
 
