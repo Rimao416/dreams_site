@@ -1,12 +1,65 @@
-import React from "react";
-import StudentHeader from "../../student/header";
+import React, { useState } from "react";
 import Footer from "../../footer";
 import StudentSideBar from "../sidebar";
-
+import { API } from "../../../config";
+import { toast } from "react-toastify";
+import Button from "../../Button";
+import { InstructorHeader } from "../../instructor/header";
 export default function StudentSecurity() {
+  const [password, setPassword] = useState({
+    old_password: "",
+    new_password: "",
+    new_password_confirmation: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const handleChange = (e) => {
+    setPassword({
+      ...password,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+    if (password.new_password !== password.new_password_confirmation) {
+      toast.error("Les mots de passe ne sont pas identiques");
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await API.post("/changePassword", password);
+      console.log(response);
+      toast.success(response.data.message);
+      setPassword({
+        old_password: "",
+        new_password: "",
+        new_password_confirmation: "",
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      // Object.values(error.response.data.errors).forEach((errorArray) => {
+      //   console.log(errorArray);
+      //   toast.error(errorArray[0]);
+      // });
+      console.log(error);
+    }
+  };
+  const isDisabled = () => {
+    if (
+      password.old_password &&
+      password.new_password &&
+      password.new_password_confirmation
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
   return (
     <div className="main-wrapper">
-      <StudentHeader activeMenu={"Security"} />
+      {/* <StudentHeader activeMenu={"Security"} /> */}
+      <InstructorHeader />
       {/* Student Dashboard */}
       <div className="page-content">
         <div className="container">
@@ -20,69 +73,44 @@ export default function StudentSecurity() {
               <div className="settings-widget profile-details">
                 <div className="settings-menu p-0">
                   <div className="profile-heading">
-                    <h3>Security</h3>
+                    <h3>Securité</h3>
                     <p>
-                      Edit your account settings and change your password here.
+                      Modifiez les paramètres de votre compte et changez votre
+                      mot de passe ici
                     </p>
                   </div>
-                  <div className="checkout-form personal-address border-line">
-                    <div className="personal-info-head">
-                      <h4>Email Address</h4>
-                      <p>
-                        Your current email address is{" "}
-                        <span>maxwell@example.com</span>
-                      </p>
-                    </div>
-                    <form action="#">
-                      <div className="new-address">
-                        <div className="row">
-                          <div className="col-lg-6">
-                            <div className="form-group">
-                              <label className="form-control-label">
-                                New email address
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Enter your New email address"
-                              />
-                            </div>
-                          </div>
-                          <div className="profile-share d-flex ">
-                            <button type="button" className="btn btn-success">
-                              Update
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
+
                   <div className="checkout-form personal-address">
                     <div className="personal-info-head">
-                      <h4>Change Password</h4>
-                      <p>
-                        We will email you a confirmation when changing your
-                        password, so please expect that email after submitting.
-                      </p>
+                      <h4>Modifier le mot de passe</h4>
                     </div>
                     <div className="row">
                       <div className="col-lg-6">
-                        <form action="#">
+                        <form onSubmit={handleSubmit}>
                           <div className="form-group">
                             <label className="form-control-label">
-                              Current password
+                              Mot de passe actuel
                             </label>
-                            <input type="password" className="form-control" />
+                            <input
+                              type="password"
+                              className="form-control"
+                              onChange={handleChange}
+                              value={password.old_password}
+                              name="old_password"
+                            />
                           </div>
                           <div className="form-group">
                             <label className="form-control-label">
-                              Password
+                              Nouveau mot de passe
                             </label>
                             <div className="pass-group" id="passwordInput">
                               <input
                                 type="password"
                                 className="form-control pass-input"
-                                placeholder="Enter your password"
+                                placeholder="Entrer un mot de passe fort"
+                                name="new_password"
+                                onChange={handleChange}
+                                value={password.new_password}
                               />
                             </div>
                             <div
@@ -98,14 +126,26 @@ export default function StudentSecurity() {
                           </div>
                           <div className="form-group">
                             <label className="form-control-label">
-                              Confirm New Password
+                              Re-tapez le mot de passe
                             </label>
-                            <input type="password" className="form-control" />
+                            <input
+                              type="password"
+                              className="form-control"
+                              onChange={handleChange}
+                              value={password.new_password_confirmation}
+                              name="new_password_confirmation"
+                            />
                           </div>
                           <div className="update-profile save-password">
-                            <button type="button" className="btn btn-primary">
-                              Save Password
-                            </button>
+                            <Button loading={loading}>
+                              <button
+                                disabled={isDisabled()}
+                                type="submit"
+                                className="btn btn-primary"
+                              >
+                                Mettre à jour
+                              </button>
+                            </Button>
                           </div>
                         </form>
                       </div>
