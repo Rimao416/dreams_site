@@ -23,7 +23,8 @@ import { ContextProvider } from "./context/ContextProvider";
 
 import { store } from "./redux/slice";
 import { CourseProvider } from "./context/CourseProvider";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
@@ -34,5 +35,6 @@ root.render(
         </Provider>
       </ContextProvider>
     </CourseProvider>
+    <ToastContainer position={toast.POSITION.TOP_RIGHT} />
   </>
 );
