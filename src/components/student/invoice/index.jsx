@@ -1,14 +1,25 @@
 import React from "react";
-import StudentHeader from "../header";
 import Footer from "../../footer";
 import StudentSideBar from "../sidebar";
 import { Link } from "react-router-dom";
-import { Download } from "react-feather";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getStudentPaiement } from "../../../redux/slice/studentSlice";
+import { InstructorHeader } from "../../instructor/header";
 
 export default function StudentInvoice() {
+  const dispatch = useDispatch();
+  // const { user } = useStateContext();
+  useEffect(() => {
+    dispatch(getStudentPaiement()).then((result) => {
+      console.log(result);
+    });
+  }, []);
+  const { payments } = useSelector((state) => state.studentReducer);
   return (
     <div className="main-wrapper">
-      <StudentHeader activeMenu={"Invoice"} />
+      {/* <StudentHeader activeMenu={"Invoice"} /> */}
+      <InstructorHeader />
       {/* Student Dashboard */}
       <div className="page-content">
         <div className="container">
@@ -22,8 +33,7 @@ export default function StudentInvoice() {
               <div className="settings-widget profile-details">
                 <div className="settings-inner-blk p-0">
                   <div className="profile-heading">
-                    <h3>Invoices</h3>
-                    <p>You can find all of your order Invoices.</p>
+                    <h3>Historique des paiements</h3>
                   </div>
                   <div className="comman-space pb-0">
                     <div className="settings-invoice-blk table-responsive">
@@ -31,232 +41,42 @@ export default function StudentInvoice() {
                       <table className="table table-borderless mb-0">
                         <thead>
                           <tr>
-                            <th>order id</th>
+                            <th>COURS</th>
                             <th>date</th>
-                            <th>amount</th>
-                            <th>status</th>
+                            <th>PRIX</th>
+                            <th>STATUT</th>
                             <th>&nbsp;</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1001
-                              </Link>
-                            </td>
-                            <td>15-01-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-due">Due</span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1002
-                              </Link>
-                            </td>
-                            <td>15-02-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1003
-                              </Link>
-                            </td>
-                            <td>15-03-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1004
-                              </Link>
-                            </td>
-                            <td>15-04-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1005
-                              </Link>
-                            </td>
-                            <td>15-05-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1006
-                              </Link>
-                            </td>
-                            <td>15-06-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1007
-                              </Link>
-                            </td>
-                            <td>15-07-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1008
-                              </Link>
-                            </td>
-                            <td>15-08-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1009
-                              </Link>
-                            </td>
-                            <td>15-09-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <Link
-                                to="view-invoice"
-                                className="invoice-no"
-                              >
-                                #1010
-                              </Link>
-                            </td>
-                            <td>15-10-2020, 10:45pm</td>
-                            <td>$50.00</td>
-                            <td>
-                              <span className="badge status-completed">
-                                Completed
-                              </span>
-                            </td>
-                            <td>
-                              <Link to="#;" className="btn-style">
-                                <Download />
-                              </Link>
-                            </td>
-                          </tr>
+                          {payments &&
+                            payments.map((payment) => (
+                              <React.Fragment key={payment._id}>
+                                <tr>
+                                  <td>
+                                    <Link
+                                      to={`/course-details/${payment.course_slug}`}
+                                      className="invoice-no"
+                                    >
+                                      {payment.course_name}
+                                    </Link>
+                                  </td>
+                                  <td>{payment.date}</td>
+                                  <td>{payment.price}</td>
+                                  <td>
+                                    <span className="badge status-completed">
+                                      {/* {payment.status} */}
+                                      Payé
+                                    </span>
+                                  </td>
+                                  {/* <td className="d-flex ">
+                                    <Link to="#;" className="btn-style">
+                                      <Download />
+                                    </Link>
+                                  </td> */}
+                                </tr>
+                              </React.Fragment>
+                            ))}
                         </tbody>
                       </table>
                       {/* Invoice info */}
