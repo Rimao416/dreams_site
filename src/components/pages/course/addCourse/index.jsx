@@ -6,14 +6,35 @@ import CourseHeader from "../header";
 import Basic from "./basic";
 import CourseMedia from "./courseMedia";
 import Curriculum from "./curriculum";
-import Settings from "./settings";
 import Success from "./success";
+// import { useStateContext } from "../../../../context/ContextProvider";
 
 const AddCourse = () => {
+  const [cours, setCours] = useState({
+    title: "",
+    description: "",
+    user_id: "1",
+    tool_id: "1",
+    price: 0,
+    old_price: 0,
+    categorie_id: "",
+    image: "",
+    video: null,
+  });
+  const [lecon, setLecon] = useState({
+    title: "",
+    course_id: null,
+    video: "",
+  });
+  const handleChange = (e) => {
+    setCours({ ...cours, [e.target.name]: e.target.value });
+  };
+  // const {user}=useStateContext()
+  // console.log(user)
   const [TabChange, setTabChange] = useState(false);
   const [TabChange1, setTabChange1] = useState(false);
   const [TabChange2, setTabChange2] = useState(false);
-  const [TabChange3, setTabChange3] = useState(false);
+  const [TabChange3] = useState(false);
   const [PageChange, setPageChange] = useState("basic");
 
   const nextTab = () => {
@@ -43,17 +64,7 @@ const AddCourse = () => {
     setPageChange("settings");
   };
 
-  const prevTab3 = () => {
-    setTabChange2(false);
-    setPageChange("curriculum");
-  };
-
-  const nextTab4 = () => {
-    setTabChange3(true);
-    setTabChange(true);
-    setPageChange("success");
-  };
-
+  
 
   return (
     <>
@@ -65,20 +76,12 @@ const AddCourse = () => {
             <div className="row align-items-center">
               <div className="col-md-12">
                 <div className="add-course-header">
-                  <h2>Add New Course</h2>
+                  <h2>Ajouter un nouveau cours</h2>
                   <div className="add-course-btns">
                     <ul className="nav">
                       <li>
-                        <Link
-                          to="/dashboard-instructor"
-                          className="btn btn-black"
-                        >
-                          Back to Course
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="#" className="btn btn-success-dark">
-                          Save
+                        <Link to="/prof-cours" className="btn btn-black">
+                          Retour
                         </Link>
                       </li>
                     </ul>
@@ -98,7 +101,7 @@ const AddCourse = () => {
                           }
                         >
                           <p>
-                            <span></span> Basic Information
+                            <span></span> Informations de base
                           </p>
                         </li>
                         <li
@@ -111,7 +114,7 @@ const AddCourse = () => {
                           }
                         >
                           <p>
-                            <span></span> Courses Media
+                            <span></span> Cours Médias
                           </p>
                         </li>
                         <li
@@ -124,7 +127,7 @@ const AddCourse = () => {
                           }
                         >
                           <p>
-                            <span></span> Curriculum
+                            <span></span> Leçons
                           </p>
                         </li>
                         <li
@@ -136,40 +139,50 @@ const AddCourse = () => {
                               : ""
                           }
                         >
-                          <p>
-                            <span /> Settings
-                          </p>
+                       
                         </li>
                       </ul>
                     </div>
 
                     <div className="widget-content multistep-form">
                       {PageChange === "basic" ? (
-                        <Basic nextTab={nextTab} />
+                        <Basic
+                          nextTab={nextTab}
+                          cours={cours}
+                          setCours={setCours}
+                          handleChange={handleChange}
+                        />
                       ) : (
                         ""
                       )}
                       {PageChange === "courseMedia" ? (
-                        <CourseMedia nextTab2={nextTab2} prevTab1={prevTab1} />
+                        <CourseMedia
+                          nextTab2={nextTab2}
+                          prevTab1={prevTab1}
+                          cours={cours}
+                          setCours={setCours}
+                          handleChange={handleChange}
+                          lecon={lecon}
+                          setLecon={setLecon}
+                        />
                       ) : (
                         ""
                       )}
                       {PageChange === "curriculum" ? (
-                        <Curriculum nextTab3={nextTab3} prevTab2={prevTab2} />
+                        <Curriculum
+                          nextTab3={nextTab3}
+                          prevTab2={prevTab2}
+                          cours={cours}
+                          setCours={setCours}
+                          handleChange={handleChange}
+                          lecon={lecon}
+                          setLecon={setLecon}
+                        />
                       ) : (
                         ""
                       )}
-                      {PageChange === "settings" ? (
-                        <Settings nextTab4={nextTab4} prevTab3={prevTab3}/>
-                      ) : (
-                        ""
-                      )}
-                      {PageChange === "success" ? (
-                        <Success />
-                      ) : (
-                        ""
-                      )}
-
+                    
+                      {PageChange === "success" ? <Success /> : ""}
                     </div>
                   </div>
                 </div>
